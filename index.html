@@ -16,10 +16,10 @@
     <span class="logo-crop"><img src="./assets/firmware-logo-transparent.png" alt="firmware logo"></span>
     <span>FIRMWARE</span>
   </a>
-  <div class="contract-slot" aria-label="Contract address placeholder">
+  <div class="contract-slot" aria-label="Token contract address">
     <span>CA</span>
     <i></i>
-    <code>NOT DEPLOYED</code>
+    <code title="F8XJnif9YTTV7fxZzGsp9KZdUkaC6n2cjArejj8Ypump">F8XJnif9YTTV7fxZzGsp9KZdUkaC6n2cjArejj8Ypump</code>
   </div>
   <div class="header-actions">
     <a class="social-link twitter-link" href="https://x.com/firmwarework" target="_blank" rel="noopener noreferrer" aria-label="firmware on X" title="firmware on X">
@@ -205,7 +205,7 @@
       <p>A receipt can be settled only once. The program verifies the payment mint, the Machine controlled token vault and each recipient token account. It computes the committed split and transfers the exact cost through the SPL Token interface. The remaining rounding unit goes to the protocol recipient so the parts always add up.</p>
       <div class="label project"><span>06</span> WHAT THE SOURCE SHOWS</div>
       <p>The board above maps each component to the actual Anchor program. Select a Chip to jump to the instruction or account definition responsible for that behavior. The source browser reads repository files at build time; it does not contain a separate handwritten version of the protocol.</p>
-      <p>The program compiles and its unit tests pass in GitHub Actions. It has not been deployed to a public Solana cluster, and the CA field therefore remains NOT DEPLOYED. The current code does not include a hardened private execution sandbox or an independent proof of offchain results. Those boundaries are stated plainly because they matter.</p>
+      <p>The program compiles and its unit tests pass in GitHub Actions. The Solana program has not been deployed to a public cluster. The token CA shown in the header is separate from the program ID and does not establish protocol deployment. The current code does not include a hardened private execution sandbox or an independent proof of offchain results. Those boundaries are stated plainly because they matter.</p>
       <div class="label project"><span>07</span> THE DIRECTION</div>
       <p>I want the next step to be a real end to end flow: a Machine installs a useful Chip, the job runs under narrow local permissions, the result is reported, and a recipient receives payment. The questions still open are how to verify private work, how to audit the executor and how to make a permission understandable before a user signs it.</p>
       <p>I would rather have a small system people can inspect and use than a long catalog of capabilities that only sounds impressive. That is the standard I want firmware to meet.</p>
