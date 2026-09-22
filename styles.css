@@ -35,7 +35,6 @@ button,a{font:inherit;color:inherit}button{border:0}a{text-decoration:none}
 .logo-crop img{display:block;width:100%;height:100%;object-fit:contain}
 .contract-slot{justify-self:center;display:flex;align-items:center;gap:9px;height:34px;padding:0 13px;border:1px solid rgba(255,255,255,.11);border-radius:999px;background:linear-gradient(135deg,rgba(255,255,255,.08),rgba(255,255,255,.025));box-shadow:inset 0 1px 0 rgba(255,255,255,.12);font:700 7px var(--mono);letter-spacing:.11em}
 .contract-slot span{color:#c7d0c9}.contract-slot i{width:5px;height:5px;border-radius:50%;background:var(--lime);box-shadow:0 0 12px rgba(147,255,117,.75)}.contract-slot code{min-width:96px;color:#718078;font:inherit;text-align:center}
-.contract-slot .ca-short{display:none}
 .header-actions{justify-self:end;display:flex;align-items:center;gap:7px}
 .social-link{display:grid;width:34px;height:34px;place-items:center;border:1px solid rgba(255,255,255,.11);border-radius:999px;background:rgba(255,255,255,.045);box-shadow:inset 0 1px 0 rgba(255,255,255,.09);transition:.2s ease}
 .social-link:hover{border-color:rgba(147,255,117,.38);background:rgba(147,255,117,.09);transform:translateY(-1px)}
@@ -124,7 +123,7 @@ button,a{font:inherit;color:inherit}button{border:0}a{text-decoration:none}
 }
 @media(max-width:600px){
   .site-header{grid-template-columns:1fr auto 1fr;height:54px;padding:0 11px;border-radius:15px}
-  .logo-crop{width:30px;height:30px}.brand span{font-size:9px}.contract-slot{height:28px;padding:0 9px}.contract-slot .ca-full{display:none}.contract-slot .ca-short{display:block}.social-link{width:28px;height:28px}
+  .logo-crop{width:30px;height:30px}.brand span{font-size:9px}.contract-slot{height:28px;padding:0 9px}.contract-slot code{display:none}.social-link{width:28px;height:28px}
   .runtime-hero{padding:74px 8px 126px}.runtime-hero .runtime-board{height:610px;border-radius:21px}.runtime-board:after{border-radius:14px}
   .board-topline b{display:none}.chip-manifest{left:5%;top:14%;width:112px;height:92px}.chip-kernel{left:5%;bottom:18%;width:120px;height:100px}.chip-registry{right:5%;top:14%;width:112px;height:92px}.chip-receipt{right:5%;bottom:18%;width:112px;height:92px}.chip-core{width:164px;height:160px}.chip-core b{font-size:14px}.core-mark{width:45px;height:45px}.chip-settlement{bottom:4%;width:130px;height:76px}.runtime-chip{padding:10px;border-radius:11px}.runtime-chip b{font-size:8px}.runtime-chip em{font-size:5px}.board-telemetry{gap:12px}.board-telemetry span:last-child{display:none}
   .runtime-hero .dev-note{padding:42px 18px 50px;border-radius:21px}.runtime-hero .dev-note h1{font-size:12vw}.runtime-hero .dev-note>.hero-lead{font-size:22px}
