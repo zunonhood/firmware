@@ -1,0 +1,52 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://firmware.dev/schemas/invocation.v1.json",
+  "title": "firmware Signed Invocation",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "invocationId",
+    "machine",
+    "chipId",
+    "artifactDigest",
+    "input",
+    "maximumCost",
+    "deadline",
+    "nonce",
+    "revenueRouteDigest",
+    "chainId",
+    "verifyingContract",
+    "signature"
+  ],
+  "properties": {
+    "invocationId": { "$ref": "#/$defs/digest" },
+    "machine": { "$ref": "#/$defs/address" },
+    "chipId": { "$ref": "#/$defs/digest" },
+    "artifactDigest": { "$ref": "#/$defs/digest" },
+    "input": true,
+    "maximumCost": { "$ref": "#/$defs/uintString" },
+    "deadline": { "type": "integer", "minimum": 0 },
+    "nonce": { "type": "string", "minLength": 1, "maxLength": 128 },
+    "revenueRouteDigest": { "$ref": "#/$defs/digest" },
+    "chainId": { "type": "integer", "minimum": 1 },
+    "verifyingContract": { "$ref": "#/$defs/address" },
+    "signature": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{130}$"
+    }
+  },
+  "$defs": {
+    "address": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{40}$"
+    },
+    "digest": {
+      "type": "string",
+      "pattern": "^0x[0-9a-fA-F]{64}$"
+    },
+    "uintString": {
+      "type": "string",
+      "pattern": "^(0|[1-9][0-9]*)$"
+    }
+  }
+}

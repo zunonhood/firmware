@@ -1,0 +1,7 @@
+node_modules/
+artifacts/
+cache/
+dist/
+types/
+.env
+deployments/local.json

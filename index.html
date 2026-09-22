@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="description" content="firmware is an open specification for executable agent capabilities on Robinhood Chain.">
+  <meta name="theme-color" content="#050706">
+  <title>firmware / Executable Capability Infrastructure</title>
+  <link rel="icon" type="image/png" href="./assets/firmware-logo-transparent.png?v=2">
+  <link rel="apple-touch-icon" href="./assets/firmware-logo-transparent.png?v=2">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+<header class="site-header">
+  <a class="brand" href="#top">
+    <span class="logo-crop"><img src="./assets/firmware-logo-transparent.png" alt="firmware logo"></span>
+    <span>FIRMWARE</span>
+  </a>
+  <div class="contract-slot" aria-label="Contract address placeholder">
+    <span>CA</span>
+    <i></i>
+    <code>NOT DEPLOYED</code>
+  </div>
+  <a class="twitter-link" href="https://x.com/firmwarework" target="_blank" rel="noopener noreferrer" aria-label="firmware on X">
+    <svg class="x-mark" viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path d="M12.6.75h2.454l-5.36 6.142L16 15.25h-4.937l-3.867-5.07-4.425 5.07H.316l5.733-6.57L0 .75h5.063l3.495 4.633L12.601.75Zm-.86 13.028h1.36L4.323 2.145H2.865z"/></svg>
+
+
+  </a>
+</header>
+<main>
+<section class="hero runtime-hero" id="top">
+  <aside class="hero-copy dev-note">
+    <div class="dev-note-meta">
+      <span>DEV NOTE / 001</span>
+      <span>21 SEP 2026</span>
+    </div>
+    <p class="eyebrow"><span>FROM THE BUILDER</span> WHY I STARTED AGAIN</p>
+    <h1>WHY I'M<br>BUILDING<br>AGAIN<span>.</span></h1>
+    <p class="hero-lead">I had barely built anything for almost two years. firmware is me starting again on Robinhood Chain, with a different idea of what is worth making.</p>
+    <div class="dev-note-copy">
+      <p>Before that break, I built something on Solana mostly for fun. I had no plan for it to become a serious project, and I never expected many people to notice it. Honestly, I did not even think the idea was especially good. Somehow, that small experiment grew to a scale I never expected.</p>
+      <p>I still do not think the product itself was good enough. The uncomfortable truth is that most people arrived for the token, not the technology. When the market cap reached $5M, the product had no more real users than it had at $100K, $500K or $1M. The product kept improving, but the way people talked about it mostly changed when the price changed.</p>
+      <p>I cannot blame the community for all of that. If people did not care enough to use the product, then the product had not earned their attention. Price created curiosity, but it did not create usefulness. That experience stayed with me during the time I stopped building.</p>
+      <p>firmware is my attempt to begin from the opposite direction. I want to make something people are willing to understand because the system itself is useful, not because a chart is moving.</p>
+      <p>So what is firmware? The easiest way I can explain it is this. It gives software agents useful tools without handing them the keys to everything. I call those tools Chips. A Chip is a small piece of reusable software with one job and clear limits. It says what information it may read, what action it may take, how much money it may use and what result it must return.</p>
+      <p>I am building firmware on Robinhood Chain. The chain gives Chips a shared place to be registered, keeps a record of the permission used for each job and settles payment when the work is complete. The actual work can still run locally, so private information does not need to be placed onchain just to prove that something happened.</p>
+      <p>Say an agent needs to find a price, place an order or publish a file. Today that often means trusting a large application with broad access. With firmware, it installs only the Chip needed for that job. A Machine checks the permission, runs the code locally and produces a receipt. Private data can stay on the machine. The receipt shows which code ran, which permission was used, what it cost and whether it finished.</p>
+      <p>The board on the left is that process made visible. Each component represents a real part of an execution, from reading the Chip manifest and checking authority to running the code, recording the receipt and settling the cost. Hover over a component and the source file connected to it is highlighted below. I want the interface to make the system inspectable before asking anyone to trust it.</p>
+      <p>I do not know yet whether this becomes a protocol, a useful developer tool or simply a better experiment. This time I would rather earn attention by making the work understandable and useful first.</p>
+    </div>
+    <div class="dev-note-footer">
+      <a href="#specification">INSPECT THE CODE <b>&#8595;</b></a>
+    </div>
+  </aside>
+
+  <div class="runtime-board" aria-label="Interactive firmware execution architecture">
+    <div class="board-topline">
+      <span><i></i> PCB FW-R01 / MACHINE 004 / EXECUTION ACTIVE</span>
+      <b>VIN 1.20V / CLK 2.40GHz / TEMP 41.8 C</b>
+    </div>
+    <div class="board-grid" aria-hidden="true"></div>
+    <div class="engineering-overlay" aria-hidden="true">
+      <div class="system-zone zone-input"><span>ZONE A / INPUT + IDENTITY</span></div>
+      <div class="system-zone zone-authority"><span>ZONE B / AUTHORITY PLANE</span></div>
+      <div class="system-zone zone-execution"><span>ZONE C / EXECUTION PLANE</span></div>
+      <div class="system-zone zone-proof"><span>ZONE D / PROOF + SETTLEMENT</span></div>
+      <span class="board-axis axis-x">X00&nbsp;&nbsp; X04&nbsp;&nbsp; X08&nbsp;&nbsp; X12&nbsp;&nbsp; X16</span>
+      <span class="board-axis axis-y">Y00&nbsp;&nbsp; Y04&nbsp;&nbsp; Y08&nbsp;&nbsp; Y12</span>
+      <span class="signal-label sig-manifest">MANIFEST_DIGEST[255:0]</span>
+      <span class="signal-label sig-authority">AUTH_GRANT / BUDGET</span>
+      <span class="signal-label sig-result">EXEC_RESULT[255:0]</span>
+      <span class="signal-label sig-receipt">RECEIPT_HASH</span>
+      <span class="signal-label sig-settlement">SETTLEMENT_ROUTE</span>
+    </div>
+
+    <svg class="circuit-traces" viewBox="0 0 1000 660" preserveAspectRatio="none" aria-hidden="true">
+      <path class="copper bus-a" d="M125 170 H292 V302 H390"/>
+      <path class="copper bus-a-thin" d="M125 180 H282 V312 H390"/>
+      <path class="copper bus-b" d="M215 505 H300 V380 H390"/>
+      <path class="copper bus-b-thin" d="M215 515 H312 V392 H390"/>
+      <path class="copper bus-c" d="M610 304 H716 V170 H850"/>
+      <path class="copper bus-c-thin" d="M610 315 H728 V180 H850"/>
+      <path class="copper bus-d" d="M610 380 H716 V505 H850"/>
+      <path class="copper bus-d-thin" d="M610 392 H728 V515 H850"/>
+      <path class="copper bus-e" d="M482 447 V548"/>
+      <path class="copper bus-e-thin" d="M518 447 V548"/>
+    </svg>
+
+    <button class="runtime-chip hardware-ic chip-manifest" data-runtime-step="0" data-open="schemas/chip.manifest.json">
+      <i class="pin-one"></i><span class="ic-notch"></span>
+      <small>U01 / INPUT ROM</small><b>MANIFEST</b><em>SHA256 / VERIFIED</em>
+      <span class="ic-led"></span><span class="chip-index">01</span>
+    </button>
+    <button class="runtime-chip hardware-ic chip-registry" data-runtime-step="1" data-open="contracts/ChipRegistry.sol">
+      <i class="pin-one"></i><span class="ic-notch"></span>
+      <small>U03 / IDENTITY</small><b>REGISTRY</b><em>REV 0.1 / PINNED</em>
+      <span class="ic-led"></span><span class="chip-index">03</span>
+    </button>
+    <button class="runtime-chip hardware-ic chip-kernel" data-runtime-step="2" data-open="contracts/PermissionKernel.sol">
+      <i class="pin-one"></i><span class="ic-notch"></span>
+      <small>U02 / SECURITY</small><b>PERMISSION KERNEL</b><em>7 RULES / PASS</em>
+      <span class="ic-led"></span><span class="chip-index">02</span>
+    </button>
+    <button class="runtime-chip processor-package chip-core" data-runtime-step="3" data-open="runtime/executor.ts">
+      <span class="package-corner c1"></span><span class="package-corner c2"></span>
+      <span class="package-corner c3"></span><span class="package-corner c4"></span>
+      <span class="core-substrate"><span class="core-die"><b>FW</b><i></i></span></span>
+      <small>U00 / FIRMWARE EXECUTION CORE</small>
+      <strong>FWE-24A</strong><em id="coreState">RUNNING LOCAL</em>
+      <span class="core-meter"><i></i></span>
+    </button>
+    <button class="runtime-chip hardware-ic chip-receipt" data-runtime-step="4" data-open="contracts/ExecutionReceiptRegistry.sol">
+      <i class="pin-one"></i><span class="ic-notch"></span>
+      <small>U04 / OUTPUT TPM</small><b>RECEIPT</b><em>DIGEST / READY</em>
+      <span class="ic-led"></span><span class="chip-index">04</span>
+    </button>
+    <button class="runtime-chip hardware-ic chip-settlement" data-runtime-step="5" data-open="contracts/RevenueRouter.sol">
+      <i class="pin-one"></i><span class="ic-notch"></span>
+      <small>U05 / ECONOMICS</small><b>SETTLEMENT</b><em>ROUTE / LOCKED</em>
+      <span class="ic-led"></span><span class="chip-index">05</span>
+    </button>
+
+    <div class="subsystem-label label-compute">COMPUTE</div>
+    <div class="subsystem-label label-security">SECURITY</div>
+    <div class="subsystem-label label-proof">PROOF</div>
+    <div class="subsystem-label label-economics">ECONOMICS</div>
+
+    <button class="runtime-chip aux-ic aux-scheduler" data-module="scheduler" data-open="runtime/executor.ts">
+      <small>U10</small><b>INVOCATION GATE</b><em>DEADLINE CHECK</em><span class="ic-led"></span>
+    </button>
+    <button class="runtime-chip aux-ic aux-loader" data-module="artifact-loader" data-open="runtime/executor.ts">
+      <small>U11</small><b>ARTIFACT CHECK</b><em>SHA256 PIN</em><span class="ic-led"></span>
+    </button>
+    <button class="runtime-chip aux-ic aux-verifier" data-module="verifier" data-open="runtime/verifier.ts">
+      <small>U12</small><b>PACKAGE VERIFY</b><em>IDENTITY CHECK</em><span class="ic-led"></span>
+    </button>
+    <button class="runtime-chip aux-ic aux-nonce" data-module="nonce-guard" data-open="runtime/sqlite.ts">
+      <small>U20</small><b>NONCE GUARD</b><em>REPLAY DENY</em><span class="ic-led"></span>
+    </button>
+    <button class="runtime-chip aux-ic aux-selector" data-module="selector-filter" data-open="contracts/PermissionKernel.sol">
+      <small>U21</small><b>SELECTOR FILTER</b><em>ALLOWLIST</em><span class="ic-led"></span>
+    </button>
+    <button class="runtime-chip aux-ic aux-budget" data-module="budget-meter" data-open="contracts/PermissionKernel.sol">
+      <small>U22</small><b>BUDGET METER</b><em>ROLLING LIMIT</em><span class="ic-led"></span>
+    </button>
+    <button class="runtime-chip aux-ic aux-version" data-module="version-pin" data-open="contracts/ChipRegistry.sol">
+      <small>U30</small><b>VERSION PIN</b><em>SEMVER LOCK</em><span class="ic-led"></span>
+    </button>
+    <button class="runtime-chip aux-ic aux-digest" data-module="digest-engine" data-open="runtime/verifier.ts">
+      <small>U40</small><b>DIGEST ENGINE</b><em>SHA256</em><span class="ic-led"></span>
+    </button>
+    <button class="runtime-chip aux-ic aux-signer" data-module="receipt-signer" data-open="contracts/ExecutionReceiptRegistry.sol">
+      <small>U41</small><b>RECEIPT REPORTER</b><em>MACHINE AUTH</em><span class="ic-led"></span>
+    </button>
+    <button class="runtime-chip aux-ic aux-meter" data-module="price-meter" data-open="runtime/executor.ts">
+      <small>U50</small><b>PRICE METER</b><em>COST CAP</em><span class="ic-led"></span>
+    </button>
+    <button class="runtime-chip aux-ic aux-router" data-module="revenue-router" data-open="contracts/RevenueRouter.sol">
+      <small>U51</small><b>REVENUE ROUTER</b><em>SPLIT ROUTE</em><span class="ic-led"></span>
+    </button>
+    <button class="runtime-chip aux-ic aux-watchdog" data-module="watchdog" data-open="runtime/executor.ts">
+      <small>U60</small><b>WATCHDOG</b><em>FAIL CLOSED</em><span class="ic-led"></span>
+    </button>
+    <div class="board-telemetry">
+      <span>CLK <b>2.40 GHZ</b></span>
+      <span>PIPELINE <b id="runtimeStage">VERIFYING INPUT</b></span>
+      <span>CORE LOAD <b id="runtimeLoad">42%</b></span>
+      <span>FAULT <b>0</b></span>
+    </div>
+  </div>
+</section>
+<div class="shell" id="specification">
+  <aside class="left">
+    <section class="explorer">
+      <header class="repo-head">
+        <span class="mark"><img src="./assets/firmware-logo-transparent.png" alt="firmware logo"></span>
+        <div><small>EXECUTABLE CAPABILITY WAFER</small><h1>FIRMWARE / S0</h1></div>
+        <div class="repo-actions"><em>TESTED BUILD</em><button data-open="protocol/CHIP-20.md">LOAD DIE 01</button></div>
+      </header>
+      <div class="repo-meta"><span><i></i>WAFER ACTIVE</span><span>REV 0.1</span><span>32 SOURCE OBJECTS / 14 TESTS PASSING</span></div>
+      <nav id="fileTree" class="tree" aria-label="firmware die index"></nav>
+      <footer class="repo-foot"><span>X 00-03</span><span>Y 00-02</span><span>SELECT DIE FOR INSPECTION</span></footer>
+    </section>
+
+    <section class="notes" id="field-notes">
+      <div class="label"><span>LAB NOTE 001</span> FROM THE FABRICATION DESK</div>
+      <p class="lead">firmware is a way for an autonomous machine to install useful software, understand exactly what that software is allowed to do, pay for the work and keep a receipt that another person can inspect.</p>
+
+      <div class="label project"><span>01</span> THE PROBLEM IN PLAIN LANGUAGE</div>
+      <h2>An agent should not need the keys to everything just to complete one task.</h2>
+      <p>Most agent software still works through broad trust. A model receives access to a wallet, an API key, a browser session or an entire application account. The tool may only need to read one price or submit one transaction, but the surrounding permission is often much larger than the job.</p>
+      <p>That is convenient while everything behaves correctly. It becomes difficult the moment a dependency changes, a prompt is manipulated, a package is replaced or an operator wants to understand where money went. The user can see the final answer, but usually cannot see the exact version of the tool, the authority it received, the amount it could spend or the path used to pay for it.</p>
+      <p>I do not think the answer is to put every calculation onchain. That would make private work public and simple work unnecessarily expensive. The better boundary is to keep execution where it makes sense while placing identity, permission, attribution and settlement somewhere shared and inspectable.</p>
+      <p class="plain">firmware separates the ability to perform a job from the authority to control the whole machine.</p>
+
+      <div class="label project"><span>02</span> WHAT FIRMWARE IS</div>
+      <p>firmware is an execution layer built around two objects. A Machine is the account that owns funds, installs capabilities and decides who may operate them. A Chip is a versioned capability that performs one understandable job.</p>
+      <p>A Chip can read market data, prepare a report, publish a file, call an approved contract function, move a limited amount of one asset or coordinate another narrowly described service. The important part is not how impressive the task sounds. The important part is that the task has a visible boundary.</p>
+      <p>Installing a Chip does not grant general control. The Machine approves a specific revision, a specific artifact digest, an expiry time, allowed destinations, allowed function selectors and spending limits. Changing the executable creates a different digest. Expanding its authority requires another explicit installation decision.</p>
+
+      <h3>WHY CALL THE CAPABILITY A CHIP</h3>
+      <p>A normal package tells you which files to download. A plugin usually belongs to one application. A prompt based skill may describe behavior without creating an enforceable boundary. I use the word Chip because the object is meant to behave more like a component with documented pins.</p>
+      <p>It has declared inputs and outputs. It has compatible runtimes. It has limits on the resources and authority it can consume. It has a revision that can be identified exactly. It can be removed or replaced without silently becoming the Machine itself.</p>
+
+      <div class="label project"><span>03</span> WHAT A CHIP CONTAINS</div>
+      <h3>IDENTITY</h3>
+      <p>Every Chip has a stable identifier and a publisher. The identifier stays constant while each release receives its own revision number, semantic version, artifact digest and manifest digest. This lets a Machine refer to one exact release instead of trusting a moving download link.</p>
+
+      <h3>INTERFACE</h3>
+      <p>The interface explains what the Chip accepts and what it returns. A price reader might accept an asset symbol and return a value with a timestamp and source. A transaction Chip might accept an amount and recipient while returning a transaction hash and execution status. Clear interfaces make capabilities replaceable and testable.</p>
+
+      <h3>PERMISSIONS</h3>
+      <p>The manifest lists the network scopes, contract addresses and functions the Chip needs. Contract access is restricted by both destination and four byte selector. Native value has a maximum. Token spend can be read directly from the encoded call instead of trusting the operator to report what it spent.</p>
+
+      <h3>BUDGET</h3>
+      <p>A Machine can set a maximum for one invocation and another maximum for a rolling period. A Chip may be allowed to spend fifty units once but no more than two hundred units in an hour. Budget accounting belongs to the enforcement layer, not to the code asking for permission.</p>
+
+      <h3>ARTIFACT</h3>
+      <p>The artifact is the executable package. firmware hashes its exact bytes and compares that digest with both the manifest and the installed registry revision. A file with the same name but different bytes is not the same release and will not pass verification.</p>
+
+      <h3>ECONOMICS</h3>
+      <p>The pricing rule states the settlement asset and the maximum price. The revenue route identifies the publisher, executor and protocol recipients together with their exact shares. The route is bound to the signed invocation and the final receipt, so settlement cannot quietly redirect payment.</p>
+
+      <div class="label project"><span>04</span> ONE EXECUTION FROM START TO FINISH</div>
+      <p class="plain">The board at the top of this page is a map of this sequence. It is not decorative telemetry.</p>
+      <p>First, the Machine creates an invocation. The request contains the Chip identifier, exact artifact digest, input, maximum cost, deadline, nonce, Robinhood Chain identifier and revenue route. The Machine signs those fields as EIP 712 typed data.</p>
+      <p>Second, the runtime validates the complete request. An ordinary wallet can be checked as an EOA signer. A MachineAccount can be checked through ERC 1271. If the input, price ceiling, artifact, deadline, nonce or route changes after signing, authorization fails.</p>
+      <p>Third, the runtime loads the installed manifest and artifact. It verifies the Chip identity, version, expiry, revocation state, manifest digest and artifact digest. Unknown manifest fields are rejected rather than ignored.</p>
+      <p>Fourth, the state store claims the nonce and reserves the maximum cost in one SQLite transaction. This prevents the same signed request from being replayed and prevents two concurrent executions from promising the same budget.</p>
+      <p>Fifth, the approved Sandbox adapter runs the artifact. The Sandbox receives only the interface and capabilities declared for that Chip. If measured cost exceeds the signed maximum, execution fails and the reservation is released.</p>
+      <p>Sixth, successful output is canonicalized and hashed. The final cost and Execution Receipt are committed together. The receipt records the invocation, Machine, Chip version, artifact, input digest, output digest, timestamps, cost and revenue route digest.</p>
+      <p>Finally, settlement reads the authorized asset, amount and route. The router permits one settlement for the invocation, splits payment according to the committed shares and does not intentionally keep custody.</p>
+
+      <div class="label project"><span>05</span> WHERE ROBINHOOD CHAIN FITS</div>
+      <h2>The chain coordinates trust. It does not need to perform every piece of work.</h2>
+      <p>Robinhood Chain provides the shared record for Chip identity, immutable revision digests, Machine authority, execution attribution and payment. Those are the facts that different participants need to agree on.</p>
+      <p>Private prompts, local files, credentials and raw outputs do not automatically belong on a public ledger. The actual task can run beside the Machine or through an executor selected by its owner. Only the records required for coordination need to cross the public boundary.</p>
+      <p>This design also keeps the protocol understandable for EVM developers. MachineAccount is a contract account. PermissionKernel enforces contract authority and rolling budgets. ChipRegistry pins publisher releases. ExecutionReceiptRegistry stores attributable results. RevenueRouter completes settlement.</p>
+      <p>firmware is an independent project built for Robinhood Chain. The Chip format is deliberately described in portable terms so another compatible runtime can read the same manifest and verify the same artifact.</p>
+
+      <div class="label project"><span>06</span> THE CORE COMPONENTS</div>
+      <h3>MACHINE ACCOUNT</h3>
+      <p>The MachineAccount holds onchain authority. Its owner installs and revokes Chips, approves operators and can authorize local invocations with ERC 1271 signatures. Operators cannot use it as an unrestricted forwarding wallet. Every Chip call must pass through the kernel.</p>
+
+      <h3>PERMISSION KERNEL</h3>
+      <p>The kernel converts a readable installation policy into rules the EVM can enforce. It checks the active registry revision, installation generation, expiry, destination, selector, native value and derived token amount. Reinstalling a Chip creates a new generation so old permissions cannot become active again by accident.</p>
+
+      <h3>CHIP REGISTRY</h3>
+      <p>The registry creates stable Chip identities and immutable revision history. A publisher can add a new revision or revoke a compromised one, but cannot overwrite bytes that an existing revision already represents. Publisher transfer uses a two step acceptance process.</p>
+
+      <h3>LOCAL RUNTIME</h3>
+      <p>The TypeScript runtime verifies signed invocations and installed packages before execution. Its state boundary is atomic. A fast memory implementation exists for deterministic tests, while the SQLite implementation persists balances, nonces, reservations and receipts across restarts.</p>
+
+      <h3>EXECUTION RECEIPTS</h3>
+      <p>A receipt is an attributable record, not a magical proof that every private calculation was correct. It answers a narrower set of useful questions: which request ran, which artifact was selected, when it ran, what it cost and which output digest was produced.</p>
+
+      <h3>REVENUE ROUTER</h3>
+      <p>The router compares the settlement request with the receipt. Asset, amount, recipients and basis point shares must match. Native ETH and ERC20 settlement are supported, duplicate settlement is rejected and funds move directly to recipients.</p>
+
+      <div class="label project"><span>07</span> WHAT EXISTS TODAY</div>
+      <p>This repository contains the contracts, runtime, persistent execution state, schemas, deployment script and the website reading from those real source files. The current automated suite covers registry revisions, revocation, selector enforcement, rolling budgets, calldata derived token spend, receipt authority, route bound settlement, EIP 712 signatures, ERC 1271 signatures, replay protection, tamper rejection, atomic rollback, restart persistence and interrupted reservation recovery.</p>
+      <p>The code browser above contains the hand written project files rather than a second collection of presentation snippets. Selecting a component on the board opens the implementation responsible for that part of the system. The goal is to let a developer move from a claim to its code without guessing where the real project begins.</p>
+
+      <div class="label project"><span>08</span> HOW I JUDGE THE PROJECT</div>
+      <p>I am not measuring firmware by how many capabilities can be listed. A smaller set of Chips with clear authority and real use is more valuable than a large catalog nobody understands.</p>
+      <p>I want to know whether a person can inspect a permission before approving it, whether two implementations can obey the same manifest, whether a Machine can replace one provider without losing its history, whether costs remain understandable and whether failures leave enough evidence to diagnose what happened.</p>
+      <p>If users only care when a price changes, then the product has not earned durable attention. The work has to be useful when there is nothing exciting to speculate about. That is the standard I want this project to meet.</p>
+
+      <div class="label project"><span>09</span> QUESTIONS I AM STILL WORKING THROUGH</div>
+      <p>How should a Machine evaluate an offchain result when a normal receipt is not enough? Which permission language is precise for developers but still understandable to the person approving it? How should emergency security updates interact with an explicitly pinned artifact? How should nested Chip calls divide responsibility, cost and failure?</p>
+      <p>I do not want to hide those questions behind a broad roadmap. They are part of the design. The protocol documents, schemas, contracts and tests are published together so each claim can be challenged against an implementation.</p>
+
+      <div class="label project"><span>10</span> THE DIRECTION</div>
+      <p>The next meaningful step is not adding more visual complexity. It is connecting a hardened execution Sandbox, running the system on Robinhood Chain testnet and observing how real Machines behave under limited authority and limited budgets.</p>
+      <p>The long term idea is simple to state even if it is difficult to build: software agents should be able to acquire useful capabilities without surrendering control, and the people around those agents should be able to understand what was authorized after the work is done.</p>
+
+      <div class="tags"><span>OPEN SPEC</span><span>LOCAL EXECUTION</span><span>EXPLICIT AUTHORITY</span><span>VERIFIABLE ARTIFACTS</span><span>ROBINHOOD CHAIN</span></div>
+      <p class="signature">firmware lab note 001 / written from the implementation / September 2026</p>
+    </section>
+  </aside>
+
+  <main class="workspace">
+    <header class="work-head">
+      <div class="lights"><span>IS-04</span><i></i></div>
+      <div id="currentPath">protocol / CHIP-20.md</div>
+      <div class="work-actions"><button id="downloadButton">DOWNLOAD</button><button id="copyButton">COPY</button></div>
+    </header>
+    <div class="toolbar"><span id="languageLabel">SPECIFICATION</span><span id="objectState">IMPLEMENTED / REVIEW OPEN</span><span id="lineCount">-- LINES</span><span>UTF-8</span></div>
+    <div class="source-summary"><b>WHAT THIS FILE DOES</b><span id="sourceSummary">Defines the implemented CHIP 20 execution lifecycle.</span></div>
+    <div class="code-scroll" id="codeScroll"><pre id="codeView"><code>Loading protocol object...</code></pre></div>
+    <footer class="work-foot"><span>DIE INSPECTION STATION IS-04</span><span id="loadState">SCANNING DIE</span><span>LOCAL EXECUTION / CHAIN SETTLEMENT</span></footer>
+  </main>
+</div>
+</main>
+<div class="toast" id="toast">OBJECT COPIED TO CLIPBOARD</div>
+<script src="./source-data.js"></script>
+<script src="./app.js"></script>
+</body>
+</html>

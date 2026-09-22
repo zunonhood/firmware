@@ -1,0 +1,84 @@
+{
+    "$schema":  "https://json-schema.org/draft/2020-12/schema",
+    "$id":  "https://firmware.dev/schemas/execution.receipt.v1.json",
+    "title":  "firmware Execution Receipt",
+    "type":  "object",
+    "additionalProperties":  false,
+    "required":  [
+                     "receiptVersion",
+                     "invocationId",
+                     "machine",
+                     "chipId",
+                     "chipVersion",
+                     "artifactDigest",
+                     "inputDigest",
+                     "outputDigest",
+                     "startedAt",
+                     "completedAt",
+                     "cost",
+                     "routeDigest",
+                     "status"
+                 ],
+    "properties":  {
+                       "receiptVersion":  {
+                                              "const":  "1"
+                                          },
+                       "invocationId":  {
+                                            "$ref":  "#/$defs/digest"
+                                        },
+                       "machine":  {
+                                       "$ref":  "#/$defs/address"
+                                   },
+                       "chipId":  {
+                                      "$ref":  "#/$defs/digest"
+                                  },
+                       "chipVersion":  {
+                                           "type":  "string",
+                                           "pattern":  "^(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)\\.(0|[1-9][0-9]*)$"
+                                       },
+                       "artifactDigest":  {
+                                              "$ref":  "#/$defs/digest"
+                                          },
+                       "inputDigest":  {
+                                           "$ref":  "#/$defs/digest"
+                                       },
+                       "outputDigest":  {
+                                            "$ref":  "#/$defs/digest"
+                                        },
+                       "startedAt":  {
+                                         "type":  "integer",
+                                         "minimum":  0
+                                     },
+                       "completedAt":  {
+                                           "type":  "integer",
+                                           "minimum":  0
+                                       },
+                       "cost":  {
+                                    "$ref":  "#/$defs/uintString"
+                                },
+                       "status":  {
+                                      "enum":  [
+                                                   "completed",
+                                                   "failed",
+                                                   "rejected"
+                                               ]
+                                  },
+                       "routeDigest":  {
+                                           "$ref":  "#/$defs/digest"
+                                       }
+                   },
+    "$defs":  {
+                  "address":  {
+                                  "type":  "string",
+                                  "pattern":  "^0x[0-9a-fA-F]{40}$"
+                              },
+                  "digest":  {
+                                 "type":  "string",
+                                 "pattern":  "^0x[0-9a-fA-F]{64}$"
+                             },
+                  "uintString":  {
+                                     "type":  "string",
+                                     "pattern":  "^(0|[1-9][0-9]*)$"
+                                 }
+              }
+}
