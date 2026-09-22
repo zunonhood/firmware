@@ -1,0 +1,21 @@
+[package]
+name = "firmware"
+version = "0.1.0"
+edition = "2021"
+description = "Bounded agent capability registry, receipts and settlement on Solana"
+
+[lib]
+crate-type = ["cdylib", "lib"]
+name = "firmware"
+
+[features]
+default = []
+cpi = ["no-entrypoint"]
+no-entrypoint = []
+no-idl = []
+no-log-ix-name = []
+idl-build = ["anchor-lang/idl-build", "anchor-spl/idl-build"]
+
+[dependencies]
+anchor-lang = { version = "1.2.0", features = ["init-if-needed"] }
+anchor-spl = "1.2.0"

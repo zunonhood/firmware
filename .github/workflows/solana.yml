@@ -1,0 +1,18 @@
+name: Solana program checks
+
+on:
+  push:
+    branches: [solana-port, main]
+  pull_request:
+
+jobs:
+  rust:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Check Solana program
+        run: cargo check --workspace --all-targets
+      - name: Test Solana program
+        run: cargo test --workspace --lib

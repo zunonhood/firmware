@@ -5,3 +5,5 @@ dist/
 types/
 .env
 deployments/local.json
+target/
+keys/
