@@ -2,7 +2,7 @@ const objects = window.FIRMWARE_SOURCE_OBJECTS;
 const tree = window.FIRMWARE_SOURCE_TREE;
 
 const fileTree = document.querySelector("#fileTree");
-let currentPath = "protocol/CHIP-20.md";
+let currentPath = "programs/firmware/src/lib.rs";
 
 function fileKind(path) {
   const extension = path.split(".").pop().toUpperCase();
@@ -65,15 +65,15 @@ function highlight(line, language) {
     safe = safe.replace(/(&quot;[^&]*?&quot;)(?=\s*:)/g, '<span class="type">$1</span>');
     safe = safe.replace(/:\s*(&quot;.*?&quot;)/g, ': <span class="string">$1</span>');
   }
-  if (["SOLIDITY", "TYPESCRIPT", "JAVASCRIPT", "TEST"].includes(language)) {
-    safe = safe.replace(/\b(pragma|contract|interface|struct|event|error|function|public|external|view|pure|returns|mapping|import|from|export|async|await|const|return|throw|new|try|catch|if)\b/g, '<span class="keyword">$1</span>');
-    safe = safe.replace(/\b(address|bytes32|bytes4|uint256|uint128|uint64|uint48|uint32|uint16|bool|string|Promise|void)\b/g, '<span class="type">$1</span>');
+  if (["RUST", "TYPESCRIPT", "JAVASCRIPT", "TEST"].includes(language)) {
+    safe = safe.replace(/\b(pub|fn|struct|enum|impl|use|mod|let|mut|const|return|if|else|match|Self|true|false|import|from|export|async|await|throw|new|try|catch)\b/g, '<span class="keyword">$1</span>');
+    safe = safe.replace(/\b(Pubkey|Account|Signer|Context|Result|u128|u64|u32|u16|i64|bool|String|Promise|void)\b/g, '<span class="type">$1</span>');
   }
   safe = safe.replace(/\b([0-9]+(?:\.[0-9]+)?)\b/g, '<span class="number">$1</span>');
   return safe || " ";
 }
 
-function openObject(path) {
+function openObject(path, symbol) {
   const object = objects[path];
   if (!object) return;
   currentPath = path;
@@ -92,7 +92,11 @@ function openObject(path) {
     row.classList.toggle("active", row.dataset.path === path)
   );
   document.querySelector("#loadState").textContent = "OBJECT VERIFIED / LOCAL";
-  document.querySelector("#codeScroll").scrollTop = 0;
+  const matchLine = symbol ? lines.findIndex((line) => line.includes(symbol)) : -1;
+  const codeScroll = document.querySelector("#codeScroll");
+  const codeLines = codeScroll.querySelectorAll(".code-line");
+  codeLines.forEach((line, index) => line.classList.toggle("symbol-focus", index === matchLine));
+  codeScroll.scrollTop = matchLine >= 0 ? codeLines[matchLine].offsetTop - codeScroll.offsetTop - 90 : 0;
 }
 
 function showToast(message) {
@@ -105,7 +109,7 @@ function showToast(message) {
 
 document.querySelectorAll("[data-open]").forEach((button) => {
   button.onclick = () => {
-    openObject(button.dataset.open);
+    openObject(button.dataset.open, button.dataset.symbol);
     if (button.classList.contains("runtime-chip")) {
       document.querySelector("#specification").scrollIntoView({ behavior: "smooth" });
     }
@@ -120,52 +124,27 @@ const runtimeStage = document.querySelector("#runtimeStage");
 const runtimeInvocation = document.querySelector("#runtimeInvocation");
 const coreState = document.querySelector("#coreState");
 const flowMap = [0, 0, 1, 2, 3, 3];
-const loadCycle = [18, 26, 39, 78, 61, 34];
-const stateCycle = [
-  "VERIFYING INPUT",
-  "IDENTITY PINNED",
-  "AUTHORITY PASS",
-  "RUNNING LOCAL",
-  "DIGEST WRITTEN",
-  "ROUTE SETTLED"
-];
+const loadCycle = ["PINNED", "REVISION", "LIMITED", "RECORDED", "UNIQUE", "SETTLED"];
+const stateCycle = ["INSTALL ARGS", "CHIP PDA", "POLICY CHECK", "RECORD RECEIPT", "RECEIPT PDA", "SPL SETTLEMENT"];
 const moduleDetails = {
-  "schemas/chip.manifest.json": {
-    index: "U01", description: "Defines the capability package before installation. The runtime rejects unknown fields and verifies the artifact digest before granting any authority.",
-    input: "Package metadata", output: "Canonical manifest", boundary: "Schema + digest", bus: ["bus-a", "bus-a-thin"]
-  },
-  "contracts/ChipRegistry.sol": {
-    index: "U03", description: "Pins publisher identity, semantic version and artifact hash to an immutable registry record used by every later execution.",
-    input: "Publisher + artifact", output: "Version record", boundary: "Identity only", bus: ["bus-c", "bus-c-thin"]
-  },
-  "contracts/PermissionKernel.sol": {
-    index: "U02", description: "Intersects requested authority with Machine policy. Contract targets, selectors, value and rolling budgets must all pass before dispatch.",
-    input: "Call intent", output: "Permit / reject", boundary: "Allowlist + budget", bus: ["bus-b", "bus-b-thin"]
-  },
-  "runtime/executor.ts": {
-    index: "U00", description: "Verifies the Machine signature and exact artifact, loads it into the approved local runtime, meters execution and returns a deterministic output digest without publishing private inputs.",
-    input: "Approved invocation", output: "Result digest", boundary: "Local sandbox", bus: ["bus-a", "bus-b", "bus-c", "bus-d", "bus-e"]
-  },
-  "contracts/ExecutionReceiptRegistry.sol": {
-    index: "U04", description: "Accepts each execution record only from the Machine or a reporter the Machine explicitly approved, then prevents that invocation from being recorded twice.",
-    input: "Execution result", output: "Authorized receipt", boundary: "Machine reporter", bus: ["bus-d", "bus-d-thin"]
-  },
-  "contracts/RevenueRouter.sol": {
-    index: "U05", description: "Checks receipt asset, amount and route digest, prevents duplicate settlement and routes the exact cost without retaining custody.",
-    input: "Receipt + route", output: "Settlement", boundary: "One settlement", bus: ["bus-e", "bus-e-thin"]
-  },
-  "scheduler": { index: "U10", description: "Rejects malformed signatures, altered fields, wrong artifacts, expired invocations and installation mismatches before any state is reserved.", input: "Invocation", output: "Accepted request", boundary: "Deadline + identity", bus: ["bus-a", "bus-c"] },
-  "artifact-loader": { index: "U11", description: "Hashes the supplied artifact bytes and rejects them unless both the manifest and installed revision contain the same digest.", input: "Artifact bytes", output: "Verified artifact", boundary: "SHA256 digest", bus: ["bus-a", "bus-a-thin"] },
-  "verifier": { index: "U12", description: "Checks Chip identity, semantic version, installation expiry, revocation state, manifest digest and artifact digest before execution.", input: "Installed package", output: "Verified package", boundary: "Pinned identity", bus: ["bus-d", "bus-d-thin"] },
-  "nonce-guard": { index: "U20", description: "Atomically persists a Machine nonce and budget reservation before execution, rejects replay and recovers expired reservations after interruption.", input: "Machine + nonce", output: "Claim result", boundary: "Replay protection", bus: ["bus-b", "bus-b-thin"] },
-  "selector-filter": { index: "U21", description: "Matches every contract call against the exact destination and function selectors approved by Machine policy.", input: "Target + selector", output: "Allowed call", boundary: "Call allowlist", bus: ["bus-b", "bus-b-thin"] },
-  "budget-meter": { index: "U22", description: "Derives spend from native value or a fixed calldata word, then enforces per-call and rolling-window limits.", input: "Value + history", output: "Budget headroom", boundary: "Spend ceiling", bus: ["bus-b", "bus-e"] },
-  "version-pin": { index: "U30", description: "Resolves a Chip identifier to one exact version and artifact hash; upgrades require a new explicit pin.", input: "Chip ID + version", output: "Pinned artifact", boundary: "No silent upgrade", bus: ["bus-c", "bus-c-thin"] },
-  "digest-engine": { index: "U40", description: "Canonicalizes JSON and computes SHA256 input and output digests without placing the original task data onchain.", input: "Private payload", output: "SHA256 digest", boundary: "Digests only", bus: ["bus-d", "bus-d-thin"] },
-  "receipt-signer": { index: "U41", description: "Allows the Machine or its approved reporter to bind the Chip revision, artifact, cost and result digest to one invocation.", input: "Receipt fields", output: "Authorized record", boundary: "Machine approval", bus: ["bus-d", "bus-e"] },
-  "price-meter": { index: "U50", description: "Compares the measured sandbox cost with the maximum amount signed in the invocation and releases the reservation on failure.", input: "Metered cost", output: "Accepted cost", boundary: "Maximum cost", bus: ["bus-e", "bus-e-thin"] },
-  "revenue-router": { index: "U51", description: "Checks the committed receipt asset and amount, prevents duplicate settlement and splits payment without retaining custody.", input: "Receipt + split", output: "Payment routes", boundary: "One settlement", bus: ["bus-e", "bus-e-thin"] },
-  "watchdog": { index: "U60", description: "Fails closed on invalid packages, expired requests, duplicate nonces, budget errors and sandbox failures, then releases reserved state.", input: "Runtime failure", output: "Rollback", boundary: "Fail closed", bus: ["bus-a", "bus-b", "bus-c", "bus-d", "bus-e"] }
+  manifest: { index: "U01", description: "InstallArgs is the exact owner supplied policy: revision, expiry, mint, budget and payment route.", input: "Owner policy", output: "InstallArgs", boundary: "Explicit fields", bus: ["bus-a", "bus-a-thin"] },
+  registry: { index: "U03", description: "create_chip creates a publisher owned PDA. publish_revision advances the revision and pins artifact and manifest digests.", input: "Publisher + Chip ID", output: "Chip PDA", boundary: "Sequential revision", bus: ["bus-c", "bus-c-thin"] },
+  policy: { index: "U02", description: "install_chip checks a live revision, expiry, budget, mint and recipient split before the Machine accepts it.", input: "Revision + limits", output: "Installation PDA", boundary: "Owner signature", bus: ["bus-b", "bus-b-thin"] },
+  core: { index: "U00", description: "record_receipt enforces operator authority, active installation, expiry and both spending ceilings before recording a result.", input: "Operator report", output: "Receipt PDA", boundary: "Cost + time", bus: ["bus-a", "bus-b", "bus-c", "bus-d", "bus-e"] },
+  receipt: { index: "U04", description: "Receipt stores invocation and input/output digests, cost, reporter, route digest and one time settlement state.", input: "Result digests", output: "Receipt account", boundary: "Unique invocation", bus: ["bus-d", "bus-d-thin"] },
+  settlement: { index: "U05", description: "settle verifies token accounts and committed route, then splits one receipt cost through SPL Token transfers.", input: "Receipt + vault", output: "Three transfers", boundary: "Settle once", bus: ["bus-e", "bus-e-thin"] },
+  scheduler: { index: "U10", description: "The onchain receipt gate rejects expired, revoked or over budget installations before creating a receipt.", input: "Invocation ID", output: "Accepted report", boundary: "Expiry + status", bus: ["bus-a", "bus-c"] },
+  "artifact-loader": { index: "U11", description: "A published revision pins the artifact digest. The program records the digest but does not download or execute private bytes.", input: "Artifact digest", output: "Revision PDA", boundary: "Immutable digest", bus: ["bus-a", "bus-a-thin"] },
+  verifier: { index: "U12", description: "An installation requires a revision belonging to the selected Chip and rejects revoked revisions.", input: "Chip + revision", output: "Pinned install", boundary: "Account relation", bus: ["bus-d", "bus-d-thin"] },
+  "nonce-guard": { index: "U20", description: "The receipt PDA includes installation and invocation ID. Reusing that pair cannot create a second account.", input: "Invocation ID", output: "Unique PDA", boundary: "Replay rejection", bus: ["bus-b", "bus-b-thin"] },
+  "account-boundary": { index: "U21", description: "Anchor account constraints require the Machine PDA, selected mint and exact owner controlled recipient token accounts.", input: "Accounts", output: "Validated accounts", boundary: "PDA + mint + owner", bus: ["bus-b", "bus-b-thin"] },
+  "budget-meter": { index: "U22", description: "The program adds reported cost to a rolling window and rejects totals over the installation limit.", input: "Cost + window", output: "New spend", boundary: "Rolling ceiling", bus: ["bus-b", "bus-e"] },
+  "version-pin": { index: "U30", description: "A new revision has a new PDA and cannot overwrite the artifact digest of a previous revision.", input: "Revision number", output: "Pinned digests", boundary: "No silent upgrade", bus: ["bus-c", "bus-c-thin"] },
+  "digest-engine": { index: "U40", description: "route_digest binds token mint, all three recipients and their basis point shares to the installation.", input: "Payment route", output: "Route digest", boundary: "SHA256", bus: ["bus-d", "bus-d-thin"] },
+  "receipt-reporter": { index: "U41", description: "Only the Machine's current operator can record a receipt, and the reporter key is stored with it.", input: "Operator signature", output: "Attributable receipt", boundary: "Signer check", bus: ["bus-d", "bus-e"] },
+  "price-meter": { index: "U50", description: "A reported cost must be positive and cannot exceed the owner's per invocation maximum.", input: "Reported cost", output: "Accepted cost", boundary: "Max cost", bus: ["bus-e", "bus-e-thin"] },
+  "revenue-router": { index: "U51", description: "The transfer helper uses Machine PDA signer seeds and SPL Token transfer_checked for each recipient.", input: "Vault + split", output: "Token transfers", boundary: "Token program", bus: ["bus-e", "bus-e-thin"] },
+  watchdog: { index: "U60", description: "Explicit error codes cover revoked revisions, expired installations, budget overflow and duplicate settlement.", input: "Invalid state", output: "Transaction rejected", boundary: "Fail closed", bus: ["bus-a", "bus-b", "bus-c", "bus-d", "bus-e"] }
 };
 const inspector = document.querySelector("#moduleInspector");
 const inspectorFields = {
@@ -181,7 +160,7 @@ let inspectedPath = null;
 
 function inspectModule(chip) {
   const path = chip.dataset.open;
-  const detail = moduleDetails[chip.dataset.module || path];
+  const detail = moduleDetails[chip.dataset.module];
   if (!detail) return;
   inspectedPath = path;
   if (inspector) {
@@ -224,7 +203,7 @@ let invocationNumber = 0x08F2;
 function renderRuntime() {
   if (inspectedPath) return;
   const activeChip = runtimeChips.find((chip) => Number(chip.dataset.runtimeStep) === runtimeStep);
-  const activeDetail = activeChip ? moduleDetails[activeChip.dataset.open] : null;
+  const activeDetail = activeChip ? moduleDetails[activeChip.dataset.module] : null;
   runtimeChips.forEach((chip) =>
     chip.classList.toggle("active", chip === activeChip)
   );
@@ -235,7 +214,7 @@ function renderRuntime() {
   runtimeFlow.forEach((item) =>
     item.classList.toggle("active", Number(item.dataset.flowStep) === flowMap[runtimeStep])
   );
-  if (runtimeLoad) runtimeLoad.textContent = loadCycle[runtimeStep] + "%";
+  if (runtimeLoad) runtimeLoad.textContent = loadCycle[runtimeStep];
   if (runtimeStage) runtimeStage.textContent = stateCycle[runtimeStep];
   if (coreState) coreState.textContent = stateCycle[runtimeStep];
   if (runtimeInvocation) {

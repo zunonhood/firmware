@@ -7,7 +7,7 @@ firmware = "E7XwWNsXYWn81mVEGNwVfaHBynjZBcGYZ8ZwnfSzYgRB"
 
 [provider]
 cluster = "Localnet"
-wallet = "keys/firmware-keypair.json"
+wallet = "keys/deployer.json"
 
 [scripts]
 test = "npm test"

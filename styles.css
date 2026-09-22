@@ -415,3 +415,4 @@ button,a{font:inherit;color:inherit}button{border:0}a{text-decoration:none}
     font-size: 8px;
   }
 }
+.code-line.symbol-focus{background:rgba(158,245,138,.12);box-shadow:inset 3px 0 0 #9ff58a}.code-line.symbol-focus .num{color:#c7f5ba}
