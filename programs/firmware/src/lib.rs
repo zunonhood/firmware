@@ -1,5 +1,5 @@
 use anchor_lang::prelude::*;
-use anchor_lang::solana_program::hash::hashv;
+use solana_sha256_hasher::hashv;
 use anchor_spl::token_interface::{self, Mint, TokenAccount, TokenInterface, TransferChecked};
 
 declare_id!("E7XwWNsXYWn81mVEGNwVfaHBynjZBcGYZ8ZwnfSzYgRB");
@@ -240,7 +240,7 @@ fn transfer_to<'info>(
         authority: machine.to_account_info(),
     };
     token_interface::transfer_checked(
-        CpiContext::new_with_signer(token_program.to_account_info(), accounts, signer_seeds),
+        CpiContext::new_with_signer(token_program.key(), accounts, signer_seeds),
         amount,
         mint.decimals,
     )
