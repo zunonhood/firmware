@@ -46,7 +46,7 @@ for (const [relativePath, language, state, description] of entries) {
     language,
     state,
     description,
-    content: fs.readFileSync(absolutePath, "utf8")
+    content: fs.readFileSync(absolutePath, "utf8").replace(/\r\n?/g, "\n")
   };
 }
 
