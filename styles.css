@@ -123,7 +123,7 @@ button,a{font:inherit;color:inherit}button{border:0}a{text-decoration:none}
 }
 @media(max-width:600px){
   .site-header{grid-template-columns:1fr auto 1fr;height:54px;padding:0 11px;border-radius:15px}
-  .logo-crop{width:30px;height:30px}.brand span{font-size:9px}.contract-slot{height:28px;padding:0 9px}.contract-slot code{display:block;min-width:0;max-width:78px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.social-link{width:28px;height:28px}
+  .logo-crop{width:30px;height:30px}.brand span{font-size:9px}.contract-slot{height:28px;padding:0 9px}.contract-slot code{display:none}.social-link{width:28px;height:28px}
   .runtime-hero{padding:74px 8px 126px}.runtime-hero .runtime-board{height:610px;border-radius:21px}.runtime-board:after{border-radius:14px}
   .board-topline b{display:none}.chip-manifest{left:5%;top:14%;width:112px;height:92px}.chip-kernel{left:5%;bottom:18%;width:120px;height:100px}.chip-registry{right:5%;top:14%;width:112px;height:92px}.chip-receipt{right:5%;bottom:18%;width:112px;height:92px}.chip-core{width:164px;height:160px}.chip-core b{font-size:14px}.core-mark{width:45px;height:45px}.chip-settlement{bottom:4%;width:130px;height:76px}.runtime-chip{padding:10px;border-radius:11px}.runtime-chip b{font-size:8px}.runtime-chip em{font-size:5px}.board-telemetry{gap:12px}.board-telemetry span:last-child{display:none}
   .runtime-hero .dev-note{padding:42px 18px 50px;border-radius:21px}.runtime-hero .dev-note h1{font-size:12vw}.runtime-hero .dev-note>.hero-lead{font-size:22px}
@@ -415,4 +415,3 @@ button,a{font:inherit;color:inherit}button{border:0}a{text-decoration:none}
     font-size: 8px;
   }
 }
-.code-line.symbol-focus{background:rgba(158,245,138,.12);box-shadow:inset 3px 0 0 #9ff58a}.code-line.symbol-focus .num{color:#c7f5ba}

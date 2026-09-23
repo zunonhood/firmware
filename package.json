@@ -1,12 +1,26 @@
 {
-  "name": "firmware-solana-site",
-  "version": "0.1.0",
-  "private": true,
-  "type": "module",
-  "description": "Source mapped website for the firmware Solana program",
-  "scripts": {
-    "source:sync": "node scripts/build-source-data.mjs",
-    "test": "node --test tests/site.test.mjs",
-    "build": "npm run source:sync && npm test"
-  }
+    "name": "firmware-protocol",
+    "version": "0.1.0",
+    "private": true,
+    "description": "Executable capability infrastructure for Robinhood Chain",
+    "scripts": {
+        "compile": "hardhat compile && tsc -p tsconfig.json",
+        "test": "hardhat test && npm run test:runtime",
+        "test:runtime": "tsc -p tsconfig.json && node --test dist/runtime-tests/runtime.test.js",
+        "source:sync": "node scripts/build-source-data.mjs",
+        "build": "npm run compile && npm run source:sync",
+        "deploy:testnet": "hardhat run scripts/deploy.ts --network robinhoodTestnet",
+        "deploy:mainnet": "hardhat run scripts/deploy.ts --network robinhoodMainnet"
+    },
+    "devDependencies": {
+        "@nomicfoundation/hardhat-ethers": "^4.1.0",
+        "@nomicfoundation/hardhat-node-test-runner": "^3.1.0",
+        "@types/node": "24.10.0",
+        "hardhat": "^3.17.0",
+        "typescript": "5.9.3"
+    },
+    "type": "module",
+    "dependencies": {
+        "ethers": "^6.17.0"
+    }
 }

@@ -1,0 +1,31 @@
+name: Robinhood Chain protocol checks
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  protocol:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install
+        run: npm ci
+      - name: Contract and runtime tests
+        run: npm test
+      - name: Compile and synchronize source browser
+        run: npm run build
+      - name: Verify generated source data
+        run: git diff --exit-code -- source-data.js
